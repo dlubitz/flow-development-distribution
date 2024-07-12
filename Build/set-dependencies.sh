@@ -57,8 +57,8 @@ echo "Setting distribution dependencies"
 
 # Require exact versions of the main packages
 php "${COMPOSER_PHAR}" --working-dir=Distribution require --no-update "neos/flow:${VERSION}"
-php "${COMPOSER_PHAR}" --working-dir=Distribution require --no-update "neos/welcome:${VERSION}"
-php "${COMPOSER_PHAR}" --working-dir=Distribution require --dev --no-update "neos/behat:${VERSION}"
+# Require some version of the same minor level
+php "${COMPOSER_PHAR}" --working-dir=Distribution require --no-update "neos/welcome:~${BRANCH}.0"
 
 # Require exact versions of sub dependency packages, allowing unstable
 if [[ ${STABILITY_FLAG} ]]; then
@@ -95,8 +95,11 @@ else
   php "${COMPOSER_PHAR}" --working-dir=Distribution remove --no-update "neos/fluid-adaptor"
 fi
 
+# Require exact versions of the main dev packages
 php "${COMPOSER_PHAR}" --working-dir=Distribution require --dev --no-update "neos/kickstarter:${VERSION}"
-php "${COMPOSER_PHAR}" --working-dir=Distribution require --dev --no-update "neos/buildessentials:${VERSION}"
+# Require some version of the same minor level of main dev packages
+php "${COMPOSER_PHAR}" --working-dir=Distribution require --dev --no-update "neos/behat:~${BRANCH}.0"
+php "${COMPOSER_PHAR}" --working-dir=Distribution require --dev --no-update "neos/buildessentials:~${BRANCH}.0"
 
 commit_manifest_update "${BRANCH}" "${BUILD_URL}" "${VERSION}" "Distribution"
 
