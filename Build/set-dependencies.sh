@@ -57,7 +57,7 @@ echo "Setting distribution dependencies"
 
 # Require exact versions of the main packages
 php "${COMPOSER_PHAR}" --working-dir=Distribution require --no-update "neos/flow:${VERSION}"
-# Require some version of the same minor level
+# Require some version of the same minor level of the main packages
 php "${COMPOSER_PHAR}" --working-dir=Distribution require --no-update "neos/welcome:~${BRANCH}.0"
 
 # Require exact versions of sub dependency packages, allowing unstable
