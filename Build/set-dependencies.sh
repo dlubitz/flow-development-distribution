@@ -57,8 +57,13 @@ echo "Setting distribution dependencies"
 
 # Require exact versions of the main packages
 php "${COMPOSER_PHAR}" --working-dir=Distribution require --no-update "neos/flow:${VERSION}"
+
 # Require some version of the same minor level of the main packages
-php "${COMPOSER_PHAR}" --working-dir=Distribution require --no-update "neos/welcome:~${BRANCH}.0"
+if [[ ${STABILITY_FLAG} ]]; then
+  php "${COMPOSER_PHAR}" --working-dir=Distribution require --no-update "neos/welcome:${BRANCH}.x-dev"
+else
+  php "${COMPOSER_PHAR}" --working-dir=Distribution require --no-update "neos/welcome:~${BRANCH}.0"
+fi
 
 # Require exact versions of sub dependency packages, allowing unstable
 if [[ ${STABILITY_FLAG} ]]; then
@@ -97,10 +102,15 @@ fi
 
 # Require exact versions of the main dev packages
 php "${COMPOSER_PHAR}" --working-dir=Distribution require --dev --no-update "neos/kickstarter:${VERSION}"
-# Require some version of the same minor level of main dev packages
-php "${COMPOSER_PHAR}" --working-dir=Distribution require --dev --no-update "neos/behat:~${BRANCH}.0"
-php "${COMPOSER_PHAR}" --working-dir=Distribution require --dev --no-update "neos/buildessentials:~${BRANCH}.0"
 
+# Require some version of the same minor level of main dev packages
+if [[ ${STABILITY_FLAG} ]]; then
+  php "${COMPOSER_PHAR}" --working-dir=Distribution require --dev --no-update "neos/behat:${BRANCH}.x-dev"
+  php "${COMPOSER_PHAR}" --working-dir=Distribution require --dev --no-update "neos/buildessentials:${BRANCH}.x-dev"
+else
+  php "${COMPOSER_PHAR}" --working-dir=Distribution require --dev --no-update "neos/behat:~${BRANCH}.0"
+  php "${COMPOSER_PHAR}" --working-dir=Distribution require --dev --no-update "neos/buildessentials:~${BRANCH}.0"
+fi
 commit_manifest_update "${BRANCH}" "${BUILD_URL}" "${VERSION}" "Distribution"
 
 echo "Setting packages dependencies"
